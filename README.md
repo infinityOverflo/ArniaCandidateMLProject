@@ -1,2 +1,4 @@
 # ArniaCandidateMLProject
-Project for employment
+Project for employment.
+
+## Resume Analyzer Chatbot focused on job matching
