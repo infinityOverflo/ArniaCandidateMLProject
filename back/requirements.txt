@@ -1,0 +1,4 @@
+pypdf
+requests
+kaggle
+kagglehub
