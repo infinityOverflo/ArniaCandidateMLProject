@@ -3,6 +3,8 @@
 __pycache__/
 **/*.pyo
 back/Datasets/**/*.*
+Datasets/**
+Data/**
 .vscode/
 .venv/
 .history/
