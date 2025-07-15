@@ -1,0 +1,18 @@
+import type { NextApiRequest, NextApiResponse } from 'next'
+import { stringify } from 'querystring'
+import { put } from '@vercel/blob';
+ 
+type ResponseData = {
+  message: string
+}
+
+export default async function sendDroppedFilesToVercel(files: File[]) {
+  const uploadResults = [];
+  for (const file of files) {
+    const blob = await put(file.name, file, {
+      access: 'public',
+    });
+    // uploadResults.push(blob);
+  }
+  return uploadResults;
+}
