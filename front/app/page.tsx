@@ -1,5 +1,5 @@
 import Image from "next/image";
-import FileDrop from "./file_drop_component/file_drop";
+import FileDrop from "./file_drop_component/file_drop_component";
 
 export default function Home() {
   return (
