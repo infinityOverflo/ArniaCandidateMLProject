@@ -35,3 +35,10 @@ def print_chunks(chunks: dict[str, list[ai_lib.Chunks]]):
         print(f"File: {file_name}")
         for chunk in file_chunks:
             print(f"  Chunk: {chunk.get_chunks_contents()}")
+
+def process_debug_with(*args, **kwargs):
+    print("Debug Processed with args:", args, "and kwargs:", kwargs)
+
+def process_debug():
+    process_debug_with()
+    print("Debug Processed")

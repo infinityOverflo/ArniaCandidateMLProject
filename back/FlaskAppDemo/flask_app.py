@@ -6,7 +6,7 @@ import os
 from pathlib import Path
 
 from my_libs.ai_lib import FileTypeEnum, FileTypeConverter, File, Files, Chunk, Chunks, chunk_texts, chunk_files, ollama_embed
-from my_libs.main_lib import print_chunks, process_files, save_uploaded_files
+from my_libs.main_lib import print_chunks, process_debug, process_files, save_uploaded_files
 
 dotenv.load_dotenv()
 LOCAL_NETWORK_PC = os.getenv("LOCAL_NETWORK_PC")
@@ -38,3 +38,8 @@ def receive_files():
     print_chunks(processed_files)
 
     return {"message": f"Flask Received Files: {saved_files_paths}"}, 200
+
+@app.route("/debug", methods=["GET"])
+def debug():
+    process_debug()
+    return {"message": "Debug Processed"}, 200
