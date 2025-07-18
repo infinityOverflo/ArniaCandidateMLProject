@@ -5,6 +5,7 @@ import dotenv
 import os
 from pathlib import Path
 
+from my_libs.ai_lib import FileTypeEnum, FileTypeConverter, File, Files, Chunk, Chunks, chunk_texts, chunk_files, ollama_embed
 from my_libs.main_lib import save_uploaded_files
 
 app = Flask(__name__)
@@ -32,3 +33,4 @@ def receive_files():
         return {"error": "No files uploaded"}, 400
     save_uploaded_files(files)
     return {"message": f"Flask Received Files"}, 200
+

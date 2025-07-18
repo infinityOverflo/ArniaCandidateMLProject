@@ -28,18 +28,23 @@ export async function handleSendFiles(): Promise<any> {
 
 export default function FileDrop() {
     return (
-        <div className={`flex items-center justify-center ${styles.fileDrop}`}>
-            <label htmlFor="fileDropInput">PDF or TXT:</label>
+        <div className={`${styles.fileDropContainer}`}>
+            <label htmlFor="fileDropInput" className={`${styles.fileDropLabel}`}>
+                <p>
+                    <b>Click "Browse..." to upload</b> .pdf or .txt files
+                </p>
+            </label>
             <input
                 id="fileDropInput"
+                className={`${styles.fileDropInput}`}
                 type="file"
                 content="Drop files here or click to upload"
                 accept=".pdf,.txt"
                 multiple
                 onChange={handleFileChange}
             />
-            <button onClick={handleSendFiles}>
-                Send Files
+            <button className={`${styles.fileDropButton}`} onClick={handleSendFiles}>
+                    Send Files
             </button>
         </div>
     );
