@@ -3,7 +3,7 @@ from my_libs import ai_lib
 
 from werkzeug.datastructures import FileStorage
 
-save_path = Path("Data/Uploads/")
+save_path = Path("Uploads/")
 
 def save_uploaded_files(files: list[FileStorage]):
     temp_path = save_path
