@@ -29,3 +29,9 @@ def process_files(file_paths: list[Path]):
         return dict_chunks
     else:
         raise ValueError("Unsupported file type")
+
+def print_chunks(chunks: dict[str, list[ai_lib.Chunks]]):
+    for file_name, file_chunks in chunks.items():
+        print(f"File: {file_name}")
+        for chunk in file_chunks:
+            print(f"  Chunk: {chunk.get_chunks_contents()}")
