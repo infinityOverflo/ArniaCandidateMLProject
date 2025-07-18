@@ -1,3 +1,4 @@
+import inspect
 from pathlib import Path
 from my_libs import ai_lib
 
@@ -37,8 +38,13 @@ def print_chunks(chunks: dict[str, list[ai_lib.Chunks]]):
             print(f"  Chunk: {chunk.get_chunks_contents()}")
 
 def process_debug_with(*args, **kwargs):
-    print("Debug Processed with args:", args, "and kwargs:", kwargs)
+    for arg in args:
+        if inspect.isfunction(arg):
+            print(inspect.getfullargspec(arg))
+        else:
+            if isinstance(arg, dict):
+                print_chunks(arg)
 
-def process_debug():
-    process_debug_with()
+def process_debug(*args, **kwargs):
+    process_debug_with(*args, **kwargs)
     print("Debug Processed")

@@ -13,6 +13,7 @@ __pycache__/
 **/*.bak
 **/*.swp
 back/FlaskAppDemo/Uploads/**/*
+back/Source/**/*
 
 # Frontend
 node_modules/
