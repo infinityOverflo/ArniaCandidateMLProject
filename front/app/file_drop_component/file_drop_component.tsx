@@ -24,6 +24,9 @@ export async function handleSendFiles(): Promise<any> {
                 .then(data => console.log(data))
                 .catch(err => console.log(err));
     }
+    // Clear the input after sending files
+    const fileInput = document.getElementById('fileDropInput') as HTMLInputElement
+    fileInput.value = '';
 }
 
 export default function FileDrop() {
