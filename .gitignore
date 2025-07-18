@@ -12,10 +12,7 @@ __pycache__/
 **/*.log
 **/*.bak
 **/*.swp
-Datasets/**
-Data/**
-back/Datasets/**/*.*
-back/FlaskAppDemo/Data/**/*
+back/FlaskAppDemo/Uploads/**/*
 
 # Frontend
 node_modules/
