@@ -1,4 +1,8 @@
-pypdf
 requests
+dotenv
+flask
+flask_cors
+psycopg[binary]
 kaggle
 kagglehub
+pypdf

@@ -13,6 +13,13 @@ import pypdf
 from kaggle.api.kaggle_api_extended import KaggleApi
 from ollama import Client, EmbedResponse
 
+class MetaData:
+    def __init__(self):
+        self.model_name = 'dengcao/Qwen3-Embedding-4B:Q5_K_M'
+        self.embed_size = 2560
+        self.local_network_pc = "localhost"
+        self.ollama_api_host = f"{self.local_network_pc}:11434"
+
 class FileTypeEnum(Enum):
     NAF = 0
     TEXT = 1

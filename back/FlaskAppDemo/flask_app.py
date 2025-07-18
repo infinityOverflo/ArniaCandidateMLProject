@@ -6,42 +6,60 @@ import os
 from pathlib import Path
 
 from my_libs.ai_lib import FileTypeEnum, FileTypeConverter, File, Files, Chunk, Chunks, chunk_texts, chunk_files, ollama_embed
-from my_libs.main_lib import process_debug, process_files, save_uploaded_files
+from my_libs.main_lib import add_embeddings_to_db, process_files, save_uploaded_files, embed_chunks, do_more, debug
 
-dotenv.load_dotenv()
-LOCAL_NETWORK_PC = os.getenv("LOCAL_NETWORK_PC")
-OLLAMA_API_HOST = LOCAL_NETWORK_PC + ":11434"
-embedding_model = 'dengcao/Qwen3-Embedding-4B:Q5_K_M'
-textsPath = Path("../Datasets/Source1/processed")
+def create_app(test_config=None):
+    # create and configure the app
+    app = Flask(__name__, instance_relative_config=True)
+    CORS(app, origins=["http://localhost:3000"])
 
-app = Flask(__name__)
-CORS(app, origins=["http://localhost:3000"])
+    dotenv.load_dotenv()
+    app.config.from_mapping(
+        SQL_P = os.getenv("SQL_PASSWORD", "default_password"),
+    )
 
-processed_files = {}
+    processed_files = {}
 
-@app.route("/")
-def hello_world():
-    return "<p>Hello, World!</p>"
+    if test_config is None:
+        # load the instance config, if it exists, when not testing
+        # app.config.from_pyfile('config.py', silent=True)
+        pass
+    else:
+        # load the test config if passed in
+        # app.config.from_mapping(test_config)
+        pass
 
-@app.route("/upload", methods=["GET"])
-def send_hello_message():
-    return {"message": "Hello!"}, 200
+    # ensure the instance folder exists
+    try:
+        os.makedirs(app.instance_path)
+    except OSError:
+        pass
 
-@app.route("/upload", methods=["POST"])
-def receive_files():
-    global processed_files
+    @app.route("/")
+    def hello_world():
+        return "<p>Hello, World!</p>"
 
-    files = request.files.getlist("files")
-    if not files:
-        return {"error": "No files uploaded"}, 400
-    saved_files_paths = save_uploaded_files(files)
-    processed_files = process_files(saved_files_paths)
-    # print_chunks(processed_files)
+    @app.route("/upload", methods=["GET"])
+    def send_hello_message():
+        return {"message": "Hello!"}, 200
 
-    return {"message": f"Flask Received Files: {saved_files_paths}"}, 200
+    @app.route("/upload", methods=["POST"])
+    def receive_files():
+        global processed_files
 
-@app.route("/debug", methods=["GET"])
-def debug():
-    global processed_files
-    process_debug(processed_files)
-    return {"message": "Debug Processed"}, 200
+        files = request.files.getlist("files")
+        if not files:
+            return {"error": "No files uploaded"}, 400
+        saved_files_paths = save_uploaded_files(files)
+        processed_files = process_files(saved_files_paths)
+        embedded_chunks = embed_chunks(processed_files)
+        add_embeddings_to_db(embedded_chunks)
+        return {"message": f"Flask Received Files: {saved_files_paths}"}, 200
+
+    @app.route("/debug", methods=["GET"])
+    def do_debug():
+        global processed_files
+        debug(dict_chunks=processed_files)
+        return {"message": "Debug Processed"}, 200
+
+    return app
