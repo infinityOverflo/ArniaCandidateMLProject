@@ -2,9 +2,6 @@
 **/*.pyc
 __pycache__/
 **/*.pyo
-back/Datasets/**/*.*
-Datasets/**
-Data/**
 .vscode/
 .venv/
 .history/
@@ -15,6 +12,10 @@ Data/**
 **/*.log
 **/*.bak
 **/*.swp
+Datasets/**
+Data/**
+back/Datasets/**/*.*
+back/FlaskAppDemo/Data/**/*
 
 # Frontend
 node_modules/

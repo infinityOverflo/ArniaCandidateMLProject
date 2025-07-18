@@ -31,6 +31,5 @@ def receive_files():
     files = request.files.getlist("files")
     if not files:
         return {"error": "No files uploaded"}, 400
-    save_uploaded_files(files)
-    return {"message": f"Flask Received Files"}, 200
-
+    files_saved_names = save_uploaded_files(files)
+    return {"message": f"Flask Received Files: {files_saved_names}"}, 200
