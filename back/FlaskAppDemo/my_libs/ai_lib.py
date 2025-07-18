@@ -15,7 +15,7 @@ from ollama import Client, EmbedResponse
 
 class FileTypeEnum(Enum):
     NAF = 0
-    TXT = 1
+    TEXT = 1
     PDF = 2
 
 class FileTypeConverter:
@@ -24,7 +24,7 @@ class FileTypeConverter:
 
     type_suffix_conversion: dict[FileTypeEnum, str] = {
             FileTypeEnum.NAF: "",
-            FileTypeEnum.TXT: ".txt",
+            FileTypeEnum.TEXT: ".txt",
             FileTypeEnum.PDF: ".pdf",
         }
     suffix_type_conversion: dict[str, FileTypeEnum] = {v: k for k, v in type_suffix_conversion.items() if v}
@@ -124,6 +124,9 @@ class AbstractReaderType(ABC):
     def get_type(self) -> FileTypeEnum:
         raise NotImplementedError("This method should be overridden by subclasses")
     @abstractmethod
+    def read_dir(self) -> Files:
+        raise NotImplementedError("This method should be overridden by subclasses")
+    @abstractmethod
     def read_files(self) -> Files:
         raise NotImplementedError("This method should be overridden by subclasses")
     
@@ -134,9 +137,23 @@ class ReadPdf(AbstractReaderType):
     def get_type(self) -> FileTypeEnum:
         return FileTypeEnum.PDF
 
-    def read_files(self, path: Path) -> Files:
+    def read_dir(self, dir_path: Path) -> Files:
         self.files = Files(FileTypeEnum.PDF)
-        for pdf_file in path.iterdir():
+        for pdf_file in dir_path.iterdir():
+            if pdf_file.is_file() and pdf_file.suffix == FileTypeConverter.to_suffix(FileTypeEnum.PDF):
+                reader = pypdf.PdfReader(pdf_file)
+                text = ""
+                for page in reader.pages:
+                    text += page.extract_text() + "\n"
+            if text:
+                file = File(pdf_file)
+                file.content = text
+                self.files.add_file(file)
+        return self.files
+
+    def read_files(self, file_paths: list[Path]) -> Files:
+        self.files = Files(FileTypeEnum.PDF)
+        for pdf_file in file_paths:
             if pdf_file.is_file() and pdf_file.suffix == FileTypeConverter.to_suffix(FileTypeEnum.PDF):
                 reader = pypdf.PdfReader(pdf_file)
                 text = ""
@@ -149,17 +166,24 @@ class ReadPdf(AbstractReaderType):
         return self.files
 
 class Reader:
-    def __init__(self, dir_path: Path, Reader: AbstractReaderType) -> None:
-            self.dir_path = dir_path
-            self.reader = Reader
+    def __init__(self, Reader: AbstractReaderType, dir_path: Path = None, file_paths: list[Path] = None) -> None:
+            self.reader: AbstractReaderType = Reader
+            self.dir_path: Path = dir_path if dir_path else Path()
+            self.file_paths: list[Path] = file_paths if file_paths else []
 
             self.content: dict[str, Files] = {}
 
-    def read_files(self) -> None:
+    def read_dir(self) -> None:
         for child_dir in self.dir_path.iterdir():
             if child_dir.is_file():
                 continue
-            self.content[child_dir.name] = self.reader.read_files(child_dir)
+            self.content[child_dir.name] = self.reader.read_dir(child_dir)
+    
+    def read_files(self) -> None:
+        for child_file in self.file_paths:
+            if child_file.is_dir():
+                continue
+            self.content[child_file.name] = self.reader.read_files([child_file])
 
     def get_content(self) -> dict[str, Files]:
         return self.content

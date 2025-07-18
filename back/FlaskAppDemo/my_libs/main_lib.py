@@ -21,9 +21,11 @@ def save_uploaded_files(files: list[FileStorage]):
 
 def process_files(file_paths: list[Path]):
     file_type = ai_lib.FileTypeConverter.get_file_type(file_paths[0].name)
-    if file_type == ai_lib.FileTypeEnum.TEXT:
-        return ai_lib.chunk_texts(file_paths)
-    elif file_type == ai_lib.FileTypeEnum.PDF:
-        return ai_lib.chunk_files(file_paths)
+    if file_type == ai_lib.FileTypeEnum.PDF:
+        read_pdf = ai_lib.Reader(file_paths=file_paths, Reader=ai_lib.ReadPdf())
+        read_pdf.read_files()
+        dict_files = read_pdf.get_content()
+        dict_chunks = ai_lib.chunk_files(dict_files)
+        return dict_chunks
     else:
         raise ValueError("Unsupported file type")
